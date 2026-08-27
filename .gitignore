@@ -1,5 +1,5 @@
-# Verify seam artifacts
-*.verify.log
+# *.verify.log is intentionally NOT ignored: the close protocol (skills/run-loop/SKILL.md)
+# commits T-###.verify.log as the run's durable verify evidence. Do not re-add this pattern.
 
 # Python
 __pycache__/
