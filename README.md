@@ -409,6 +409,14 @@ python3 -m pytest scripts/tests/test_loop_voice.py -q
 that every fallback path above does what this README says it does, including both of the
 optional dependencies going missing.
 
+## Licence
+
+agent-loop is licensed under the [Apache License 2.0](LICENSE). You can use it
+commercially, modify it, and redistribute it; the licence asks that you keep the
+notice, state significant changes, and it grants you an explicit patent licence
+from the contributors. The full terms are in `LICENSE`, and `NOTICE` carries the
+attribution the licence asks redistributors to preserve.
+
 ---
 
 Built by Jesse Rurka. The voice on the other end is

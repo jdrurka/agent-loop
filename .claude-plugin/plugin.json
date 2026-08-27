@@ -1,5 +1,11 @@
 {
   "name": "agent-loop",
   "version": "0.1.0",
-  "description": "Deterministic dispatch loop for AI coding agents: a planner skill and a driver skill that plan, dispatch, verify, and adjudicate tickets until a plan is done."
+  "description": "Deterministic dispatch loop for AI coding agents: a planner skill and a driver skill that plan, dispatch, verify, and adjudicate tickets until a plan is done.",
+  "author": {
+    "name": "Jesse Rurka",
+    "url": "https://github.com/jdrurka"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/jdrurka/agent-loop"
 }
