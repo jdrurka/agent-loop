@@ -1,0 +1,9 @@
+step,seconds
+checkout,1.0
+restore-cache,2.0
+
+build,6.0
+test,3.0
+lint,0.5
+package,n/a
+deploy,4.5

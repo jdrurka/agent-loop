@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Verify seam artifacts, written beside the tickets once a loop runs here.
+*.verify.log
