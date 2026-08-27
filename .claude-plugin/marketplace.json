@@ -1,0 +1,18 @@
+{
+  "name": "agent-loop",
+  "owner": {
+    "name": "jdrurka",
+    "url": "https://github.com/jdrurka"
+  },
+  "metadata": {
+    "description": "Marketplace hosting the agent-loop dispatch plugin."
+  },
+  "plugins": [
+    {
+      "name": "agent-loop",
+      "source": "./",
+      "description": "Deterministic dispatch loop for AI coding agents: a planner skill and a driver skill that plan, dispatch, verify, and adjudicate tickets until a plan is done.",
+      "version": "0.1.0"
+    }
+  ]
+}

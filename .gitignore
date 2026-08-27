@@ -1,0 +1,13 @@
+# Verify seam artifacts
+*.verify.log
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment / secrets
+.env
+
+# OS noise
+.DS_Store

@@ -1,0 +1,66 @@
+# Blast-radius classification for scripts/loop_check.py
+#
+# Which files are unrecoverable enough that a ticket touching them stops for a
+# human. This file is the repo-portable seed: nothing here names an app any
+# particular deployment of this engine happens to have.
+#
+# Format: [section] headers, one glob per line, # for comments. A section this
+# file omits keeps the checker's built-in fallback (see _FALLBACK in
+# scripts/loop_check.py). A section present but empty is honoured as empty,
+# because deliberately emptying a class is a real choice.
+#
+# A per-plan --blast-globs-file layers a DIFF on top of whichever set is in
+# force here:
+#   - a bare line ADDS a glob to the section
+#   - a leading "-" DROPS a glob that matches one of this file's defaults
+#   - a first non-comment line of "!" REPLACES the section's list wholesale
+# Never amendable from inside a ticket.
+
+# The unrecoverable class: schema, auth and identity, secrets, deploy surface,
+# and the enforcement layer itself.
+[blast]
+**/migrations/**
+**/migrations_pg/**
+**/*auth*
+**/*token*
+**/.env*
+**/Dockerfile
+**/docker-compose*
+scripts/git-hooks/**
+credentials/**
+**/*secrets*
+tools/verify_seam.sh
+scripts/loop_check.py
+config/**
+
+# The judge-files. A ticket editing the machinery that adjudicates it can weaken
+# its own gate and close green, which is the one class that survives nobody
+# watching. Deliberately narrow: test DIRS stay open, because plans add tests
+# constantly and gating them is a tax the mission filter rejects. A plan whose
+# stakes warrant it opts test dirs in via its own blast-globs file.
+[judge]
+tools/verify_seam.sh
+scripts/loop_check.py
+scripts/git-hooks/**
+config/**
+
+# config/** is here because THIS FILE defines every gate in the repo: leaving
+# it out of [blast] and [judge] would let an executor widen every gate and
+# have nothing fire.
+
+# Auth surface. Generic patterns only — a portable engine shouldn't invent
+# per-deployment router or auth-helper paths.
+[auth]
+**/*auth*
+**/*secrets*
+**/*token*
+**/.env*
+
+# Assertions. Editing what a test asserts, while that test is the gate, is the
+# gate-weakening direction; it blocks rather than clearing on a receipt.
+[assertion]
+**/tests/**
+**/test_*.py
+**/*.test.*
+**/*.spec.*
+tools/asserts/**
