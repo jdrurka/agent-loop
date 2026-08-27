@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Guard an implement-loop verify against shared-checkout dirt and live data credentials.
+# Guard an agent-loop verify against shared-checkout dirt and live data credentials.
 
 set -euo pipefail
 
