@@ -20,6 +20,8 @@ Usage:
   python3 scripts/loop_check.py --plan-dir ... --ticket ... --repo ~/Dev/projects/other-repo
 """
 
+from __future__ import annotations
+
 import argparse
 import hashlib
 import json
