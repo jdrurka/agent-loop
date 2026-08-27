@@ -49,6 +49,7 @@ scripts/tests/                98 tests for the notifier, no network, 0.1 seconds
 tools/verify_seam.sh          the guard every verify runs through
 config/blast-globs.txt        which changes stop for a human
 config/live-credentials.txt   which environment names the guard refuses
+examples/demo-project/        a spec-first demo repo whose middle ticket fails its gate
 ```
 
 The skills are plain markdown. The engine is Python and bash, standard library only, no
@@ -58,7 +59,8 @@ checker.
 
 ## Requirements
 
-- **Python 3.10 or newer.** `loop_check.py` uses `X | None` annotations at import time.
+- **Python 3.9 or newer.** 3.9.6 is the stock `/usr/bin/python3` on macOS, and the checker
+  runs a full adjudication on it, so a Mac needs nothing installed.
 - **git**, because attribution, the claim window and territory matching are all commits.
 - **bash**, for the verify guard.
 - **pytest**, only if you want to run the notifier's test suite.
@@ -68,22 +70,10 @@ needed for a loop to run.
 
 ## Install
 
-### As a Claude Code plugin
-
-```
-/plugin marketplace add jdrurka/agent-loop
-/plugin install agent-loop@agent-loop
-```
-
-Restart, and `/run-loop <path-to-your-plan>` is available. Claude Code namespaces plugin
-skills, so the fully qualified form is `/agent-loop:run-loop` if the short name collides with
-something else you have installed.
-
-To try it out of a clone without installing anything, point a single session at the directory:
-
-```
-claude --plugin-dir ~/agent-loop
-```
+Both paths work, and they differ in one way that decides which you want. Every verify command in
+every plan carries the engine's absolute path, so you have to know where the engine sits. Under a
+clone that's a path you picked. Under a plugin install it's a versioned cache directory you look
+up, and it moves when the plugin updates. Clone it if you're going to run loops.
 
 ### As a plain clone
 
@@ -118,6 +108,43 @@ For the driver itself on a harness that isn't Claude Code, hand your agent
 document, not a plugin format. Those two commands, plus the notifier below, are the whole
 interface between the skill and the machine.
 
+In Claude Code, you get the slash commands out of the clone without installing anything by
+pointing a session at the directory:
+
+```
+claude --plugin-dir ~/agent-loop
+```
+
+### As a Claude Code plugin
+
+```
+/plugin marketplace add jdrurka/agent-loop
+/plugin install agent-loop@agent-loop
+```
+
+Restart, and `/run-loop <path-to-your-plan>` is available. Claude Code namespaces plugin
+skills, so the fully qualified form is `/agent-loop:run-loop` if the short name collides with
+something else you have installed.
+
+An install copies the plugin's declared source directory into
+`~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`. This repo declares its source as the
+repo root, so all of it lands there, `scripts/`, `tools/`, `config/` and `examples/` included.
+That directory is your `<engine>`, and you need its full path for every verify string you write.
+
+`CLAUDE_PLUGIN_ROOT` won't give it to you. That variable expands inside a plugin's own
+`hooks.json` and MCP config, not in the shell a verify runs in, where it comes back empty. Ask the
+CLI instead:
+
+```bash
+claude plugin list --json | python3 -c \
+  "import sys,json;print(next(p['installPath'] for p in json.load(sys.stdin) if p['id']=='agent-loop@agent-loop'))"
+```
+
+That prints an absolute path you can paste straight into a plan. Look at its last segment: it's
+the installed version, so updating the plugin moves the directory and every verify string holding
+the old path breaks at once. Repointing them is a find and replace, but you have to know to do it,
+which is why the clone is the easier root to run loops from.
+
 ## Your first loop
 
 Write a plan with two header lines the driver reads:
@@ -139,6 +166,32 @@ about the section, not who typed it.
 
 Then run the driver against the plan and let it work. Budget defaults to 15 dispatches per
 run, and it asks before taking more.
+
+## The demo
+
+`examples/demo-project/` runs the whole thing end to end in a few minutes: a real plan, three
+tickets, and one of them wrong in a way that survives a glance. It's a build-timings summariser
+that ships red on purpose. `tests/` is complete and describes what the three modules owe, the
+modules are unfinished, and its `PLAN.md` carries the manifest that finishes them.
+
+The middle ticket is the one to watch. `demo/stats.py` computes a median as
+`sorted(values)[len(values) // 2]`, which is right for odd counts, wrong for even ones, and
+raises `IndexError` on an empty list where `mean`, just above it in the same file, raises
+`ValueError`. Five of the seven tests in its spec pass on that, so a half fix looks like a fix,
+and nothing short of the whole fix closes the ticket: the checker re-runs the spec itself.
+
+Copy it out of the clone first, because the loop attributes work by commit and the demo needs to
+be its own repo:
+
+```bash
+cp -R ~/agent-loop/examples/demo-project ~/demo-project
+cd ~/demo-project
+git init && git add . && git commit -m "starting state"
+python3 -m pytest -q     # 6 failed, 11 passed
+```
+
+Then hand the driver its `PLAN.md`. `examples/README.md` walks the rest, including what the
+finished state prints.
 
 ## Voice notes on your phone
 
