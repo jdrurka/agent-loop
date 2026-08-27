@@ -134,7 +134,7 @@ bash ~/agent-loop/tools/verify_seam.sh --repo . --path src/thing.py --path tests
 
 Four properties, and a row is not finished until it has all four.
 
-**Fully materialized, no placeholders.** The command runs verbatim through a shell, so a leftover `<engine>` or `<the auth file>` is a redirect that dies before the seam starts and produces a failure that looks nothing like the ticket. The checker refuses such a string on attempt 1 by design, and the manifest is where it should never have existed. Write real paths, including the engine root.
+**Fully materialized, no placeholders.** The command runs verbatim through a shell, so a leftover `<engine>` or `<the auth file>` is a redirect that dies before the seam starts and produces a failure that looks nothing like the ticket. The checker refuses such a string on attempt 1 by design, and the manifest is where it should never have existed. Write real paths, including the engine root — where that root actually sits depends on how the engine was installed, and the README's Install section is where you get its value for this machine.
 
 **It names a path from its own row's territory.** A verify copied from a sibling ticket and left un-retargeted runs, passes, and closes the ticket green having asserted nothing whatsoever about this ticket's work. Read every verify string against the territory column beside it, on the same row, and confirm the assertion actually touches that file.
 
